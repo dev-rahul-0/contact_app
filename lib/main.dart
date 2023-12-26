@@ -150,6 +150,13 @@ class _HomePageState extends State<HomePage> {
       );
         });
   }
+  Future<void> _delete(String contactId) async{
+    await contact.doc(contactId).delete();
+    
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('You have successfully deleted a contact'),
+    ),);
+  }
 
   final CollectionReference contact =
       FirebaseFirestore.instance.collection('contact');
@@ -190,12 +197,16 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _update(documentSnapshot);
+                              },
                               icon: const Icon(Icons.edit),
                               color: Colors.yellow,
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _delete(documentSnapshot.id);
+                              },
                               icon: const Icon(Icons.delete),
                             )
                           ],
