@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -30,6 +30,127 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _nameController1 = TextEditingController();
+  final TextEditingController _phoneController1 = TextEditingController();
+
+  Future<void> _create() async {
+    await showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text(
+                  'Add Contact',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                  TextField(
+                    controller: _nameController1,
+                  decoration: InputDecoration(labelText: "Name"),
+                ),
+                  TextField(
+                    controller: _phoneController1,
+                  decoration: InputDecoration(labelText: "Phone"),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () async{
+                      final String name = _nameController1.text;
+                      final String phone = _phoneController1.text;
+                      if (phone !=null) {
+                        await contact.add({"name": name, "phone": phone});
+                        _nameController1.text="";
+                        _phoneController1.text="";
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent),
+                    child: const Text('Create'))
+              ],
+            ),
+          );
+        });
+  }
+
+
+  Future<void> _update([DocumentSnapshot? documentSnapshot]) async{
+    if (documentSnapshot !=null)
+      {
+        _nameController.text = documentSnapshot['name'];
+        _phoneController.text = documentSnapshot['phone'];
+      }
+    await showModalBottomSheet(context: context,
+        builder: (BuildContext context){
+      return Padding(padding: EdgeInsets.only(
+        top: 20,
+        left: 20,
+        right: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text('Update Contact',
+          textAlign: TextAlign.center,style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 19
+            ),),
+          SizedBox(height: 20,),
+            TextField(
+            controller: _nameController,
+            decoration: InputDecoration(labelText: "Name"),
+          ),
+            TextField(
+            controller: _phoneController,
+            decoration: InputDecoration(labelText: "Phone"),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ElevatedButton(
+              onPressed: () async{
+                final String name = _nameController.text;
+                final String phone = _phoneController.text;
+                if (phone !=null) {
+                  await contact.doc(documentSnapshot!.id).update({"name": name, "phone": phone});
+                  _nameController.text="";
+                  _phoneController.text="";
+                  Navigator.of(context).pop();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent),
+              child: const Text('Update'))
+        ],
+      ),
+      );
+        });
+  }
+
   final CollectionReference contact =
       FirebaseFirestore.instance.collection('contact');
 
@@ -68,9 +189,15 @@ class _HomePageState extends State<HomePage> {
                         width: 100,
                         child: Row(
                           children: [
-                            IconButton(onPressed: (){}, icon: const Icon(Icons.edit),color: Colors.yellow,),
-                            IconButton(onPressed: (){}, icon: const Icon(Icons.delete),)
-
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.edit),
+                              color: Colors.yellow,
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.delete),
+                            )
                           ],
                         ),
                       ),
@@ -78,11 +205,16 @@ class _HomePageState extends State<HomePage> {
                   );
                 });
           }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.redAccent,
-        onPressed: () {},
+        onPressed: () {
+          _create();
+        },
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
