@@ -63,11 +63,11 @@ class _HomePageState extends State<HomePage> {
                 ),
                   TextField(
                     controller: _nameController1,
-                  decoration: InputDecoration(labelText: "Name"),
+                  decoration: const InputDecoration(labelText: "Name"),
                 ),
                   TextField(
                     controller: _phoneController1,
-                  decoration: InputDecoration(labelText: "Phone"),
+                  decoration: const InputDecoration(labelText: "Phone"),
                 ),
                 const SizedBox(
                   height: 20,
@@ -111,22 +111,22 @@ class _HomePageState extends State<HomePage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Text('Update Contact',
+          const Text('Update Contact',
           textAlign: TextAlign.center,style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 19
             ),),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
             TextField(
             controller: _nameController,
-            decoration: InputDecoration(labelText: "Name"),
+            decoration: const InputDecoration(labelText: "Name"),
           ),
             TextField(
             controller: _phoneController,
-            decoration: InputDecoration(labelText: "Phone"),
+            decoration: const InputDecoration(labelText: "Phone"),
           ),
           const SizedBox(
             height: 20,
